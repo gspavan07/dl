@@ -1,6 +1,5 @@
-
-## **1. Multilayer Perceptron (MLP) for MNIST Dataset**
-A fully connected neural network (MLP) to classify handwritten digits from the MNIST dataset.
+## **1. Multilayer Perceptron (MLP) for MNIST Dataset**  
+A Multilayer Perceptron (MLP) is a feedforward neural network with multiple layers. This program trains an MLP on the MNIST dataset to classify handwritten digits. The model consists of fully connected layers with ReLU activation and softmax for classification.
 
 ### **Program:**
 ```python
@@ -35,8 +34,8 @@ Test Accuracy: 97.2%
 
 ---
 
-## **2. Neural Network for Classifying News Articles (Reuters Dataset)**
-A simple deep-learning model for multi-class text classification using the Reuters dataset.
+## **2. Neural Network for Classifying News Articles (Reuters Dataset)**  
+This program builds a neural network to classify news articles from the Reuters dataset into different categories. It uses word embedding and an LSTM layer to process text sequences and predict one of 46 possible classes.
 
 ### **Program:**
 ```python
@@ -69,8 +68,8 @@ Test Accuracy: 80.7%
 
 ---
 
-## **3. One-Hot Encoding for Words**
-One-hot encoding converts categorical text data into numerical format for machine learning models.
+## **3. One-Hot Encoding for Words**  
+One-hot encoding is a technique used to convert categorical data into numerical format. This program demonstrates how to one-hot encode words using `sklearn`'s `OneHotEncoder`, which transforms categorical labels into binary vectors.
 
 ### **Program:**
 ```python
@@ -99,8 +98,8 @@ One-Hot Encoded:
 
 ---
 
-## **4. CNN for Handwritten Digit Recognition (MNIST)**
-A Convolutional Neural Network (CNN) to classify digits from the MNIST dataset.
+## **4. CNN for Handwritten Digit Recognition (MNIST)**  
+A Convolutional Neural Network (CNN) is used to recognize handwritten digits from the MNIST dataset. The model consists of convolutional, pooling, and dense layers, which extract spatial features from images for classification.
 
 ### **Program:**
 ```python
@@ -139,8 +138,8 @@ Test Accuracy: 98.3%
 
 ---
 
-## **5. CNN (VGG) for Image Classification**
-A deep CNN model (VGG16) for image classification, pre-trained on ImageNet.
+## **5. CNN (VGG) for Image Classification**  
+The VGG16 model is a pre-trained Convolutional Neural Network (CNN) used for image classification. This program loads VGG16 as a feature extractor and adds fully connected layers for classification.
 
 ### **Program:**
 ```python
@@ -168,4 +167,3 @@ model.summary()
 Model Summary:
 VGG16 feature extractor with dense layers for classification.
 ```
-
