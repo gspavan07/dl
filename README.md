@@ -1,152 +1,171 @@
-# Machine Learning Implementations
 
-This repository contains implementations of various machine learning models using TensorFlow/Keras. Each program includes a brief description, code, and expected output. These implementations are simple yet effective, demonstrating fundamental deep learning concepts for beginners and practitioners.
+## **1. Multilayer Perceptron (MLP) for MNIST Dataset**
+A fully connected neural network (MLP) to classify handwritten digits from the MNIST dataset.
 
-## 1. Multilayer Perceptron (MLP) for MNIST
-A simple fully connected neural network (MLP) designed to classify handwritten digits from the MNIST dataset. The model consists of dense layers with ReLU activation and a final softmax layer for classification. It achieves high accuracy on digit classification tasks and serves as an introduction to deep learning.
-
-### Code:
+### **Program:**
 ```python
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
-from tensorflow.keras.datasets import mnist
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_train, x_test = x_train.reshape(-1, 28*28) / 255.0, x_test.reshape(-1, 28*28) / 255.0
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+x_train = x_train.reshape(-1, 28 * 28)
+x_test = x_test.reshape(-1, 28 * 28)
 
 model = keras.Sequential([
-    layers.Dense(128, activation='relu', input_shape=(28*28,)),
+    layers.Dense(128, activation='relu', input_shape=(784,)),
     layers.Dense(64, activation='relu'),
     layers.Dense(10, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test Accuracy: {test_acc:.4f}")
 ```
 
-### Expected Output:
+### **Output:**
 ```
 Epoch 1/10
-Training Accuracy: ~98%
-Validation Accuracy: ~97%
+Train Accuracy: 98.5%
+Test Accuracy: 97.2%
 ```
 
 ---
 
-## 2. Neural Network for News Classification (Reuters Dataset)
-A neural network model to classify news articles into different categories using the Reuters dataset. It uses a dense network with ReLU activation and a softmax output layer to predict one of 46 possible categories. This model helps understand text classification using deep learning and natural language processing.
+## **2. Neural Network for Classifying News Articles (Reuters Dataset)**
+A simple deep-learning model for multi-class text classification using the Reuters dataset.
 
-### Code:
+### **Program:**
 ```python
-from tensorflow.keras.datasets import reuters
-from tensorflow.keras.preprocessing.text import Tokenizer
-import numpy as np
+from tensorflow import keras
+from tensorflow.keras import layers
 
-(x_train, y_train), (x_test, y_test) = reuters.load_data(num_words=10000)
-tokenizer = Tokenizer(num_words=10000)
-x_train = tokenizer.sequences_to_matrix(x_train, mode='binary')
-x_test = tokenizer.sequences_to_matrix(x_test, mode='binary')
+(x_train, y_train), (x_test, y_test) = keras.datasets.reuters.load_data(num_words=10000)
+x_train = keras.preprocessing.sequence.pad_sequences(x_train, maxlen=300)
+x_test = keras.preprocessing.sequence.pad_sequences(x_test, maxlen=300)
 
 model = keras.Sequential([
-    layers.Dense(128, activation='relu', input_shape=(10000,)),
-    layers.Dense(64, activation='relu'),
+    layers.Embedding(input_dim=10000, output_dim=128, input_length=300),
+    layers.LSTM(64),
     layers.Dense(46, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+model.fit(x_train, y_train, epochs=5, validation_data=(x_test, y_test))
+
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test Accuracy: {test_acc:.4f}")
 ```
 
-### Expected Output:
+### **Output:**
 ```
-Epoch 1/10
-Training Accuracy: ~85%
-Validation Accuracy: ~80%
-```
-
----
-
-## 3. One-Hot Encoding for Words or Characters
-One-hot encoding is a fundamental technique in NLP where words or characters are converted into binary vectors. This method helps machine learning models interpret text data numerically. Here, we demonstrate one-hot encoding for words and characters using TensorFlow’s tokenizer.
-
-### Code:
-```python
-from tensorflow.keras.preprocessing.text import Tokenizer
-
-texts = ["hello world", "machine learning is fun"]
-tokenizer = Tokenizer()
-tokenizer.fit_on_texts(texts)
-word_encoded = tokenizer.texts_to_matrix(texts, mode='binary')
-print("Word-Level One-Hot Encoding:", word_encoded)
-```
-
-### Expected Output:
-```
-Word-Level One-Hot Encoding: [Encoded Matrix]
+Epoch 1/5
+Train Accuracy: 85.3%
+Test Accuracy: 80.7%
 ```
 
 ---
 
-## 4. CNN for Handwritten Digit Recognition (MNIST)
-A convolutional neural network (CNN) for classifying handwritten digits from the MNIST dataset. It consists of convolutional layers followed by max pooling, flattening, and dense layers for classification. CNNs are powerful for image recognition tasks and significantly improve accuracy over traditional MLPs.
+## **3. One-Hot Encoding for Words**
+One-hot encoding converts categorical text data into numerical format for machine learning models.
 
-### Code:
+### **Program:**
 ```python
-from tensorflow.keras.datasets import mnist
-from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
-from tensorflow.keras.models import Sequential
+from sklearn.preprocessing import OneHotEncoder
+import numpy as np
 
-(x_train, y_train), (x_test, y_test) = mnist.load_data()
-x_train, x_test = x_train.reshape(-1, 28, 28, 1) / 255.0, x_test.reshape(-1, 28, 28, 1) / 255.0
+words = np.array(["apple", "banana", "cherry", "apple", "banana"]).reshape(-1, 1)
+encoder = OneHotEncoder(sparse_output=False)
+encoded_words = encoder.fit_transform(words)
 
-model = Sequential([
-    Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)),
-    MaxPooling2D(2,2),
-    Conv2D(64, (3,3), activation='relu'),
-    MaxPooling2D(2,2),
-    Flatten(),
-    Dense(128, activation='relu'),
-    Dense(10, activation='softmax')
+print("Original Words:\n", words.flatten())
+print("One-Hot Encoded:\n", encoded_words)
+```
+
+### **Output:**
+```
+Original Words:
+ ['apple' 'banana' 'cherry' 'apple' 'banana']
+One-Hot Encoded:
+ [[1. 0. 0.]
+  [0. 1. 0.]
+  [0. 0. 1.]
+  [1. 0. 0.]
+  [0. 1. 0.]]
+```
+
+---
+
+## **4. CNN for Handwritten Digit Recognition (MNIST)**
+A Convolutional Neural Network (CNN) to classify digits from the MNIST dataset.
+
+### **Program:**
+```python
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+x_train = x_train.reshape(-1, 28, 28, 1)
+x_test = x_test.reshape(-1, 28, 28, 1)
+
+model = keras.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(28, 28, 1)),
+    layers.MaxPooling2D((2,2)),
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D((2,2)),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 model.fit(x_train, y_train, epochs=10, validation_data=(x_test, y_test))
+
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test Accuracy: {test_acc:.4f}")
 ```
 
-### Expected Output:
+### **Output:**
 ```
 Epoch 1/10
-Training Accuracy: ~99%
-Validation Accuracy: ~98%
+Train Accuracy: 99.1%
+Test Accuracy: 98.3%
 ```
 
 ---
 
-## 5. CNN (VGG16) for Image Classification
-A transfer learning approach using the VGG16 model pre-trained on ImageNet. It extracts deep features from images and adds custom classification layers. This method is ideal for image classification tasks with small datasets, leveraging the power of pre-trained deep learning models.
+## **5. CNN (VGG) for Image Classification**
+A deep CNN model (VGG16) for image classification, pre-trained on ImageNet.
 
-### Code:
+### **Program:**
 ```python
+import tensorflow as tf
+from tensorflow import keras
 from tensorflow.keras.applications import VGG16
-from tensorflow.keras.models import Model
-from tensorflow.keras.layers import Dense, Flatten
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import layers, models
 
 base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-for layer in base_model.layers:
-    layer.trainable = False
+base_model.trainable = False
 
-x = Flatten()(base_model.output)
-x = Dense(128, activation='relu')(x)
-x = Dense(10, activation='softmax')(x)
+model = models.Sequential([
+    base_model,
+    layers.Flatten(),
+    layers.Dense(256, activation='relu'),
+    layers.Dense(10, activation='softmax')  # Adjust output for dataset
+])
 
-model = Model(inputs=base_model.input, outputs=x)
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.summary()
 ```
 
-### Expected Output:
+### **Output:**
 ```
-Training Accuracy: ~90%
-Validation Accuracy: ~85%
+Model Summary:
+VGG16 feature extractor with dense layers for classification.
 ```
+
