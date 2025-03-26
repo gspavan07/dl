@@ -143,27 +143,35 @@ The VGG16 model is a pre-trained Convolutional Neural Network (CNN) used for ima
 
 ### **Program:**
 ```python
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.applications import VGG16
-from tensorflow.keras import layers, models
+import numpy as np
+from keras.preprocessing import image
+from keras.applications.vgg16 import VGG16, preprocess_input, decode_predictions
 
-base_model = VGG16(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
-base_model.trainable = False
+# Load the VGG16 model pre-trained on ImageNet
+model = VGG16(weights='imagenet')
 
-model = models.Sequential([
-    base_model,
-    layers.Flatten(),
-    layers.Dense(256, activation='relu'),
-    layers.Dense(10, activation='softmax')  # Adjust output for dataset
-])
+# Load and preprocess the image
+img_path = 'puppy.jpg'  # Ensure this image is in the same directory or provide the full path
+img = image.load_img(img_path, target_size=(224, 224))
+img_array = image.img_to_array(img)
+img_array = np.expand_dims(img_array, axis=0)  # Add batch dimension
+img_array = preprocess_input(img_array)  # Preprocess image for VGG16
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.summary()
+# Make predictions
+predictions = model.predict(img_array)
+decoded_predictions = decode_predictions(predictions, top=3)[0]  # Get top 3 predicted labels
+
+# Print predictions
+print("Top predictions:")
+for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
+    print(f"{i + 1}: {label} ({score:.2f})")
 ```
 
 ### **Output:**
 ```
-Model Summary:
-VGG16 feature extractor with dense layers for classification.
+35363/35363 ━━━━━━━━━━━━━━━━━━━━ 0s 0us/step
+Top predictions:
+1: Pomeranian (0.75)
+2: chow (0.25)
+3: keeshond (0.00)
 ```
