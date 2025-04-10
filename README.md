@@ -1,76 +1,4 @@
-## 1. Lex Program to Identify Patterns
-
-### **Description**
-This program uses `Lex` to scan an input file and identify keywords, identifiers, numbers, and operators.
-
-### **Code (pattern.l)**
-```lex
-%{
-#include <stdio.h>
-%}
-
-%%
-
-int|float|if|else|while { printf("Keyword: %s\n", yytext); }
-[0-9]+                { printf("Number: %s\n", yytext); }
-[a-zA-Z_][a-zA-Z0-9_]* { printf("Identifier: %s\n", yytext); }
-[+\-*/=]             { printf("Operator: %s\n", yytext); }
-\n                   { /* Ignore new lines */ }
-.                    { printf("Other: %s\n", yytext); }
-
-%%
-
-int main() {
-    yylex();
-    return 0;
-}
-
-int yywrap() {
-    return 1;
-}
-```
-
-### **Compilation & Execution**
-```bash
-lex pattern.l
-gcc lex.yy.c -o lex.out -ll
-./lex.out < input.txt
-```
-
-### **Sample Input (`input.txt`)**
-```
-int x = 10;
-if (x > 5) {
-    x = x + 1;
-}
-```
-
-### **Output**
-```
-Keyword: int
-Identifier: x
-Operator: =
-Number: 10
-Other: ;
-Keyword: if
-Other: (
-Identifier: x
-Operator: >
-Number: 5
-Other: )
-Other: {
-Identifier: x
-Operator: =
-Identifier: x
-Operator: +
-Number: 1
-Other: ;
-Other: }
-```
-
----
-
-## 2. LL(1) Parser for Arithmetic Expressions
+## 1. LL(1) Parser for Arithmetic Expressions
 
 ### **Description**
 This program implements an LL(1) parser for expressions of the form `E -> T + E | T` and `T -> id`.
@@ -143,7 +71,7 @@ Parsing successful!
 
 ---
 
-## 3. Loop Unrolling Program
+## 2. Loop Unrolling Program
 
 ### **Description**
 This program demonstrates loop unrolling, a compiler optimization technique where loop iterations are expanded to reduce branch overhead.
@@ -179,6 +107,5 @@ gcc loop_unrolling.c -o loop
 Unrolled loop output:
 0 1 2 3 4 5 6 7 8 9
 ```
-
 ---
 
